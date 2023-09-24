@@ -2,9 +2,9 @@
 
 namespace Chiariello\LaravelApiCrudMaker;
 
+use Chiariello\LaravelApiCrudMaker\Commands\LaravelApiCrudMakerCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Chiariello\LaravelApiCrudMaker\Commands\LaravelApiCrudMakerCommand;
 
 class LaravelApiCrudMakerServiceProvider extends PackageServiceProvider
 {
