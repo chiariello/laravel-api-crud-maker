@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace Chiariello\LaravelApiCrudMaker\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class LaravelApiCrudMakerCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'laravel-api-crud-maker';
 
     public $description = 'My command';
 
