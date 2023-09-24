@@ -2,7 +2,6 @@
     "name": "chiariello/laravel-api-crud-maker",
     "description": "Package to create an api CRUD with filters",
     "keywords": [
-        "chiariello",
         "laravel",
         "laravel-api-crud-maker"
     ],
