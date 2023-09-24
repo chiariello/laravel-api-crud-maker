@@ -2,9 +2,9 @@
 
 namespace Chiariello\LaravelApiCrudMaker\Tests;
 
+use Chiariello\LaravelApiCrudMaker\LaravelApiCrudMakerServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Chiariello\LaravelApiCrudMaker\LaravelApiCrudMakerServiceProvider;
 
 class TestCase extends Orchestra
 {
