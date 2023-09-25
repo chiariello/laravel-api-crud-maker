@@ -10,6 +10,7 @@ class AbstractFilters
     protected Request $request;
 
     protected array $filters = [];
+
     protected array $with = [];
 
     public function __construct(Request $request)
@@ -30,20 +31,20 @@ class AbstractFilters
         }
 
         $sortResult = $this->hookSort($this->request->order['attribute'], $this->request->order['direction']);
-        if(!$sortResult) {
+        if (! $sortResult) {
             $this->sort($this->request->order['attribute']);
         }
 
     }
 
-    protected function hookSort($attribute, $direction) : bool
+    protected function hookSort($attribute, $direction): bool
     {
         return false;
     }
 
     protected function getFilters()
     {
-        return array_filter($this->request->data ?? [], fn($value)=>(!is_null($value)));
+        return array_filter($this->request->data ?? [], fn ($value) => (! is_null($value)));
     }
 
     public function sort(string $sort)
@@ -71,7 +72,8 @@ class AbstractFilters
         $this->builder->where($column, '<=', $value);
     }
 
-    public function getLike(){
+    public function getLike()
+    {
         return env('DB_CONNECTION') == 'pgsql' ? 'ilike' : 'like';
     }
 }

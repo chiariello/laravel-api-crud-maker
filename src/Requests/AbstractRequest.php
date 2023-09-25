@@ -7,6 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class AbstractRequest extends FormRequest
 {
     protected string $model;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -27,11 +28,13 @@ class AbstractRequest extends FormRequest
         return [];
     }
 
-    public function persist(){
+    public function persist()
+    {
         $data = $this->except('id');
-        if($this->id){
+        if ($this->id) {
             return $this->model::findOrFail($this->id)->update($data);
         }
+
         return $this->model::create($data);
     }
 }

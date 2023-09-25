@@ -2,7 +2,6 @@
 
 namespace Chiariello\LaravelApiCrudMaker\Controllers;
 
-
 use Chiariello\LaravelApiCrudMaker\Traits\ApiResponser;
 use Illuminate\Routing\Controller;
 
