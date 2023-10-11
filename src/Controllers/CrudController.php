@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 class CrudController extends ApiController
 {
     protected string $model;
+
     protected string $orderBy = 'id';
 
     /**
