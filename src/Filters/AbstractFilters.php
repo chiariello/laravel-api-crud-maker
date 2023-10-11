@@ -29,10 +29,9 @@ class AbstractFilters
             }
         }
 
-        $sortResult = $this->hookSort($this->request->order['attribute'], $this->request->order['direction']);
-        if(!$sortResult) {
-            $this->sort($this->request->order['attribute']);
-        }
+        $this->hookSort(
+            $this->request->order ? $this->request->order['attribute'] : 'id',
+            $this->request->order ? $this->request->order['direction'] : 'asc');
 
     }
 

@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 
 class CrudController extends ApiController
 {
-    protected AbstractFilters $filter;
     protected string $model;
     protected string $orderBy = 'id';
 
@@ -20,17 +19,11 @@ class CrudController extends ApiController
      */
 
 
-    public function __construct(AbstractFilters $filter)
+    public function __construct()
     {
-        $this->filter = $filter;
     }
 
-    public function index(): JsonResponse
-    {
-        return $this->successResponse($this->model::orderBy($this->orderBy)->get());
-    }
-
-    public function getPage(AbstractFilters $filter, Request $request): JsonResponse
+    public function list(AbstractFilters $filter, Request $request): JsonResponse
     {
         $model = $this->model::filter($filter);
         if($request->entries){
