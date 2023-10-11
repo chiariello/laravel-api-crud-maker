@@ -35,14 +35,14 @@ class AbstractFilters
 
     }
 
-    protected function hookSort($attribute, $direction) : bool
+    protected function hookSort($attribute, $direction): bool
     {
         return false;
     }
 
     protected function getFilters()
     {
-        return array_filter($this->request->data ?? [], fn($value)=>(!is_null($value)));
+        return array_filter($this->request->data ?? [], fn ($value) => (! is_null($value)));
     }
 
     public function sort(string $sort)
@@ -70,7 +70,8 @@ class AbstractFilters
         $this->builder->where($column, '<=', $value);
     }
 
-    public function getLike(){
+    public function getLike()
+    {
         return env('DB_CONNECTION') == 'pgsql' ? 'ilike' : 'like';
     }
 }

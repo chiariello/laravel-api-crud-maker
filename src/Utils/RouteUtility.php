@@ -8,9 +8,7 @@ class RouteUtility
 {
     /**
      * Set canonical routes for Controller
-     * @param string $controllerName
-     * @param string $routeName
-     * @param array $excludedMethods
+     *
      * @return void
      */
     public static function controllerRoutes(string $controllerName, string $routeName, array $excludedMethods = []){
@@ -21,7 +19,8 @@ class RouteUtility
         if(!in_array('update',$excludedMethods)) Route::put($routeName.'/{id}',[$controllerName,'update']);
     }
 
-    public static function exportRoute($controller, $routename){
-        Route::post($routename.'/export',[$controller,'export']);
+    public static function exportRoute($controller, $routename)
+    {
+        Route::post($routename.'/export', [$controller, 'export']);
     }
 }

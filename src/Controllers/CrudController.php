@@ -26,9 +26,10 @@ class CrudController extends ApiController
     public function list(AbstractFilters $filter, Request $request): JsonResponse
     {
         $model = $this->model::filter($filter);
-        if($request->entries){
+        if ($request->entries) {
             return $this->paginatedSuccessResponse($model->paginate($request->entries));
         }
+
         return $this->successResponse($model->get());
     }
 
@@ -37,19 +38,18 @@ class CrudController extends ApiController
         return $this->successResponse($request->persist());
     }
 
-    public function show($id) : JsonResponse
+    public function show($id): JsonResponse
     {
         return $this->successResponse($this->model::findOrFail($id));
     }
 
-    public function update(AbstractRequest $request) : JsonResponse
+    public function update(AbstractRequest $request): JsonResponse
     {
         return $this->successResponse($request->persist());
     }
 
-    public function destroy($id) : JsonResponse
+    public function destroy($id): JsonResponse
     {
         return $this->successResponse($this->model::findOrFail($id)->delete());
     }
-
 }
