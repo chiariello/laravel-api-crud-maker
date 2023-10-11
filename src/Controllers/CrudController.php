@@ -10,15 +10,16 @@ use Illuminate\Http\Request;
 class CrudController extends ApiController
 {
     protected string $model;
+
     protected string $orderBy = 'id';
 
     /**
      * Campo di ricerca per il metodo index()
+     *
      * @var string
+     *
      * @see index()
      */
-
-
     public function __construct()
     {
     }

@@ -9,6 +9,7 @@ use Illuminate\Support\ServiceProvider;
 class FilterServiceProvider extends ServiceProvider
 {
     use ModelDispatcher;
+
     /**
      * Register services.
      */
@@ -16,6 +17,7 @@ class FilterServiceProvider extends ServiceProvider
     {
         $this->app->bind(AbstractFilters::class, function ($app): ?AbstractFilters {
             $model = $this->getModel();
+
             return
                 ($model) ?
                     $app->make('App\Filters\\'.$model.'Filters') :
