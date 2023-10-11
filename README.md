@@ -1,84 +1,160 @@
-# Package to create an api CRUD with filters
+# Create API CRUD with filters
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/chiariello/laravel-api-crud-maker.svg?style=flat-square)](https://packagist.org/packages/chiariello/laravel-api-crud-maker)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/chiariello/laravel-api-crud-maker/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/chiariello/laravel-api-crud-maker/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/chiariello/laravel-api-crud-maker/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/chiariello/laravel-api-crud-maker/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/chiariello/laravel-api-crud-maker.svg?style=flat-square)](https://packagist.org/packages/chiariello/laravel-api-crud-maker)
-
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
-
-## Support us
-
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/laravel-api-crud-maker.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/laravel-api-crud-maker)
-
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
-
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
+Create API CRUD with filters in Laravel project
 
 ## Installation
 
-You can install the package via composer:
+Via composer:
 
 ```bash
 composer require chiariello/laravel-api-crud-maker
 ```
-
-You can publish and run the migrations with:
-
-```bash
-php artisan vendor:publish --tag="laravel-api-crud-maker-migrations"
-php artisan migrate
-```
-
-You can publish the config file with:
-
-```bash
-php artisan vendor:publish --tag="laravel-api-crud-maker-config"
-```
-
-This is the contents of the published config file:
-
+Add FilterServiceProvider and RequestServiceProvider in config/app.php
 ```php
-return [
-];
+    'providers' => ServiceProvider::defaultProviders()->merge([
+        /*
+         * Package Service Providers...
+         */
+
+        /*
+         * Application Service Providers...
+         */
+        App\Providers\AppServiceProvider::class,
+        App\Providers\AuthServiceProvider::class,
+        // App\Providers\BroadcastServiceProvider::class,
+        App\Providers\EventServiceProvider::class,
+        App\Providers\RouteServiceProvider::class,
+        Chiariello\LaravelApiCrudMaker\Providers\FilterServiceProvider::class, // <-- Add This
+        Chiariello\LaravelApiCrudMaker\Providers\RequestServiceProvider::class, // <-- Add This
+    ])->toArray(),
 ```
-
-Optionally, you can publish the views using
-
-```bash
-php artisan vendor:publish --tag="laravel-api-crud-maker-views"
-```
-
 ## Usage
 
-```php
-$laravelApiCrudMaker = new Chiariello\LaravelApiCrudMaker();
-echo $laravelApiCrudMaker->echoPhrase('Hello, Chiariello!');
-```
-
-## Testing
-
+Create new model with migration and controller:
 ```bash
-composer test
+composer php artisan make:model Flight --migration --controller
+```
+Edit the migration as you want
+```php
+Schema::create('flights', function (Blueprint $table) {
+    $table->id();
+    $table->string('departure');
+    $table->string('destination');
+    $table->timestamps();
+});
 ```
 
-## Changelog
+Add HasFilters trait and fillables attributes in model
 
-Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
+```php
+namespace App\Models;
 
-## Contributing
+use Chiariello\LaravelApiCrudMaker\Traits\HasFilters;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
-Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
+class Flight extends Model
+{
+    use HasFactory, HasFilters;
 
-## Security Vulnerabilities
+    protected $fillable = [
+        'departure',
+        'destination'
+    ];
+}
+```
+Extend CrudController and set $model attribute in Controller class
+```php
+namespace App\Http\Controllers;
 
-Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
+use App\Models\Flight;
+use Chiariello\LaravelApiCrudMaker\Controllers\CrudController;
 
+class FlightController extends CrudController
+{
+    protected string $model = Flight::class;
+}
+```
+Create Filter class under app/Filters the class must have {ModelName}Filter.php name
+(in this example FlightFilters.php).
+
+Now you need to set the filters array and insert every attribute filter and
+create a method for every filter.
+```php
+namespace App\Filters;
+
+use Chiariello\LaravelApiCrudMaker\Filters\AbstractFilters;
+
+class FlightFilters extends AbstractFilters
+{
+    protected array $filters = [
+        'departure',
+        'destination'
+    ];
+    
+    public function departure(string $departure)
+    {
+        $this->like('departure', $departure);
+    }
+    
+    public function destination(string $destination)
+    {
+        $this->like('destination', $destination);
+    }
+    
+}
+```
+create a form request with this name convention {{ModelName}}Request.php
+```bash
+php artisan make:request FlightRequest
+```
+Set validation and create and update logic.
+```php
+namespace App\Http\Requests;
+
+use App\Models\Flight;
+use Illuminate\Foundation\Http\FormRequest;
+
+class FlightRequest extends FormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     */
+    public function rules(): array
+    {
+        return [
+            //
+        ];
+    }
+
+    public function persist(){
+
+        if($this->id){
+            return Flight
+                ::findOrFail($this->id)
+                ->update($this->all());
+        }
+        return Flight::create($this->all());
+    }
+}
+```
+add Route in api.php
+```php
+use App\Http\Controllers\FlightController;
+use Chiariello\LaravelApiCrudMaker\Utils\RouteUtility;
+
+RouteUtility::controllerRoutes(FlightController::class,'flights');
+```
 ## Credits
 
 - [Salvatore Chiariello](https://github.com/chiariello)
-- [All Contributors](../../contributors)
-
-## License
-
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
