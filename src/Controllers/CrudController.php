@@ -14,11 +14,7 @@ class CrudController extends ApiController
 
     /**
      * Campo di ricerca per il metodo index()
-     * @var string
-     * @see index()
      */
-
-
     public function __construct()
     {
     }
